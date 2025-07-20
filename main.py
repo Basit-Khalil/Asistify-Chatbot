@@ -1,4 +1,4 @@
-from agents import Runner, Agent, OpenAIChatCompletionsModel, AsyncOpenAI, RunConfig
+from openai.agents import Runner, Agent, OpenAIChatCompletionsModel, AsyncOpenAI, RunConfig
 
 import os 
 from dotenv import load_dotenv
@@ -24,35 +24,32 @@ config = RunConfig(
     tracing_disabled=True
 )
 
-agent = Agent (
+agent = Agent(
     name="Asistant",
-    instructions="You are a helpfull,witty asistant with a modern tone,always keep replies friendly",
+    instructions="You are a helpful, witty assistant with a modern tone. Always keep replies friendly.",
     model=model
 )
 
-
 @cl.on_chat_start
 async def handle_start():
-    cl.user_session.set("history",[])
+    cl.user_session.set("history", [])
     await cl.Message(content="""
-#   WELCOME! I'm ASISTIFY 🤖
-Your Intelligent asistant 💡✨
-Ask me anything- let's make it happen.💭
-"""
-
-).send()
+# 👋 WELCOME! I'm ASISTIFY 🤖
+Your intelligent assistant 💡✨  
+Ask me anything – let's make it happen. 💭
+""").send()
 
 @cl.on_message
-async def handle_message(message : cl.Message):
-
+async def handle_message(message: cl.Message):
     history = cl.user_session.get("history")
+    history.append({"role": "user", "content": message.content})
 
-    history.append({"role":"user","content":message.content})
     result = await Runner.run(
         agent,
         input=history,
         run_config=config
     )
-    history.append({"role": "asistant","content":result.final_output})
-    cl.user_session.set("history",history)
+
+    history.append({"role": "assistant", "content": result.final_output})
+    cl.user_session.set("history", history)
     await cl.Message(content=result.final_output).send()
