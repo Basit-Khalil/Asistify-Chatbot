@@ -1,4 +1,4 @@
-from openai.agents import Runner, Agent, OpenAIChatCompletionsModel, AsyncOpenAI, RunConfig
+from agents import Runner, Agent, OpenAIChatCompletionsModel, AsyncOpenAI, RunConfig
 
 import os 
 from dotenv import load_dotenv
@@ -34,7 +34,7 @@ agent = Agent(
 async def handle_start():
     cl.user_session.set("history", [])
     await cl.Message(content="""
-# 👋 WELCOME! I'm ASISTIFY 🤖
+#  Hi, I'm ASISTIFY 🤖
 Your intelligent assistant 💡✨  
 Ask me anything – let's make it happen. 💭
 """).send()
